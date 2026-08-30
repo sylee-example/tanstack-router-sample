@@ -207,7 +207,9 @@ pages/users/route.tsx                         │
 | `/users/$userId` | 동적 param, `validateSearch`(Zod)로 검증되는 search param |
 | (없는 경로) | `notFoundComponent` |
 
-사용자 API는 고정 목 데이터를 반환하는 `shared/api`의 함수로 대체한다. 서버 없이 `pnpm dev`로 바로 돈다.
+사용자 API는 고정 목 데이터를 반환하는 `entities/user/api`의 함수로 대체한다. 서버 없이 `pnpm dev`로 바로 돈다.
+
+목 API 를 `shared/api` 가 아니라 `entities/user/api` 에 두는 이유는 의존 방향이다. 목 데이터는 `User` 타입을 알아야 하는데, `shared` 가 `entities` 를 import 하면 이 문서가 정한 방향(`app → pages → features → entities → shared`)이 뒤집힌다. `shared/api` 에는 도메인을 모르는 것만 둔다 — 지금은 `queryClient` 뿐이다.
 
 ## 11. 테스트
 

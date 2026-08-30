@@ -52,7 +52,7 @@
 | `src/entities/user/api/userQueries.ts` | `queryOptions`. loader와 컴포넌트가 공유한다 |
 | `src/entities/session/model/sessionStore.ts` | 세션 zustand 스토어 |
 | `src/shared/api/queryClient.ts` | QueryClient 생성 |
-| `src/shared/api/mockUserApi.ts` | 목 사용자 API |
+| `src/entities/user/api/mockUserApi.ts` | 목 사용자 API. `shared` 가 아니라 여기 두어야 의존 방향이 뒤집히지 않는다 |
 | `src/shared/ui/DataGrid.tsx` | ag-grid 모듈 등록·테마·기본 설정 |
 | `src/test/setup.ts` | vitest 셋업 |
 | `src/test/renderRoute.tsx` | 라우터 테스트 헬퍼 |
@@ -531,14 +531,14 @@ autoCodeSplitting 으로 라우트별 청크 분리를 켰다."
 - Create: `src/entities/user/model/types.ts`
 - Create: `src/entities/user/api/userQueries.ts`
 - Create: `src/entities/user/index.ts`
-- Create: `src/shared/api/mockUserApi.ts`
+- Create: `src/entities/user/api/mockUserApi.ts`
 - Test: `src/entities/user/api/userQueries.test.ts`
 
 **Interfaces:**
 - Consumes: 없음
 - Produces:
   - `src/entities/user/model/types.ts` → `interface User { id: string; name: string; email: string; department: string; active: boolean }`
-  - `src/shared/api/mockUserApi.ts` → `fetchUsers(): Promise<User[]>`, `fetchUser(id: string): Promise<User>`
+  - `src/entities/user/api/mockUserApi.ts` → `fetchUsers(): Promise<User[]>`, `fetchUser(id: string): Promise<User>`
   - `src/entities/user/api/userQueries.ts` → `usersQueryOptions()`, `userQueryOptions(id: string)`
   - `src/entities/user/index.ts` → 위 전부를 재export
 
@@ -600,10 +600,10 @@ export interface User {
 }
 ```
 
-`src/shared/api/mockUserApi.ts`:
+`src/entities/user/api/mockUserApi.ts` — `shared` 가 아니라 `entities` 에 둔다. 목 데이터가 `User` 타입을 알아야 하는데, `shared` 가 `entities` 를 import 하면 의존 방향이 뒤집힌다:
 
 ```ts
-import type { User } from '@/entities/user/model/types';
+import type { User } from '../model/types';
 
 const USERS: User[] = [
   { id: 'u-1', name: '김서연', email: 'seoyeon@example.com', department: '플랫폼', active: true },
@@ -634,7 +634,7 @@ export const fetchUser = async (id: string): Promise<User> => {
 
 ```ts
 import { queryOptions } from '@tanstack/react-query';
-import { fetchUser, fetchUsers } from '@/shared/api/mockUserApi';
+import { fetchUser, fetchUsers } from './mockUserApi';
 
 /**
  * 라우트 loader 와 컴포넌트가 함께 쓰는 쿼리 정의.
