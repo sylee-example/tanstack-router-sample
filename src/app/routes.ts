@@ -1,4 +1,4 @@
-import { rootRoute, index } from '@tanstack/virtual-file-routes';
+import { rootRoute, index, route } from '@tanstack/virtual-file-routes';
 
 /**
  * 라우트 트리 선언.
@@ -8,4 +8,5 @@ import { rootRoute, index } from '@tanstack/virtual-file-routes';
  */
 export const routes = rootRoute('root.tsx', [
   index('../pages/home-redirect/route.tsx'),
+  route('/login', '../pages/login/route.tsx'),
 ]);
