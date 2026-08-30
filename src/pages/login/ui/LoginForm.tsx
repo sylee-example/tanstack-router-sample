@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input } from 'antd';
@@ -15,7 +15,7 @@ interface LoginFormProps {
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
@@ -28,7 +28,14 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
       <label htmlFor="username" className="text-sm font-medium">
         아이디
       </label>
-      <Input id="username" placeholder="이름을 입력하세요" {...register('username')} />
+      {/* antd Input 의 ref는 DOM 노드가 아니라 { focus, blur, input, ... } 형태의 커스텀 핸들 객체다.
+          register() 를 직접 스프레드하면 RHF가 제출 시점에 ref.value 를 읽는데 그 값이 항상 undefined라
+          입력해도 "아이디를 입력하세요" 검증 에러가 난다. Controller 로 감싸 value/onChange 를 명시적으로 연결한다. */}
+      <Controller
+        name="username"
+        control={control}
+        render={({ field }) => <Input id="username" placeholder="이름을 입력하세요" {...field} />}
+      />
       {errors.username && <span className="text-sm text-red-600">{errors.username.message}</span>}
       <Button type="primary" htmlType="submit" loading={isSubmitting}>
         로그인
