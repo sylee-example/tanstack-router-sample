@@ -143,6 +143,8 @@ dist
 src/routeTree.gen.ts
 # 에이전트 작업 디렉터리
 .superpowers/
+# macOS
+.DS_Store
 ```
 
 `index.html`:
