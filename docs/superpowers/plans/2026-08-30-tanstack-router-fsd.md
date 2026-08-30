@@ -27,6 +27,7 @@
   - `virtualRouteConfig` 값 → **프로젝트 루트** 기준
   - `routes.ts` 안의 모든 `file` 문자열 → **`routesDirectory`**(= `./src/app`) 기준
 - FSD 의존 방향은 `app` → `pages` → `features` → `entities` → `shared`. 역방향 import 금지.
+- **antd 폼 컨트롤에는 React Hook Form 의 `register()` 를 스프레드하지 않는다.** antd 의 `Input`/`Select`/`DatePicker` 는 ref 로 DOM 노드가 아니라 커스텀 핸들 객체를 넘기므로 RHF 가 값을 읽지 못한다. `Controller` 로 감싼다.
 
 ---
 
@@ -786,7 +787,7 @@ export { useSessionStore } from './model/sessionStore';
 `src/pages/login/ui/LoginForm.tsx`:
 
 ```tsx
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input } from 'antd';
@@ -803,7 +804,7 @@ interface LoginFormProps {
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
@@ -816,7 +817,14 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
       <label htmlFor="username" className="text-sm font-medium">
         아이디
       </label>
-      <Input id="username" placeholder="이름을 입력하세요" {...register('username')} />
+      {/* antd Input 의 ref 는 DOM 노드가 아니라 { focus, blur, input, ... } 형태의 커스텀 핸들 객체다.
+          register() 를 그대로 스프레드하면 RHF 가 제출 시점에 ref.value 를 읽는데 그 값이 항상 undefined 라
+          입력해도 검증 에러가 난다. Controller 로 감싸 value/onChange 를 명시적으로 잇는다. */}
+      <Controller
+        name="username"
+        control={control}
+        render={({ field }) => <Input id="username" placeholder="이름을 입력하세요" {...field} />}
+      />
       {errors.username && <span className="text-sm text-red-600">{errors.username.message}</span>}
       <Button type="primary" htmlType="submit" loading={isSubmitting}>
         로그인
