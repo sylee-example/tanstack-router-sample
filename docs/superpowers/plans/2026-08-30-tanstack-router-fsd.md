@@ -141,6 +141,8 @@ node_modules
 dist
 # 생성물 — 커밋하지 않는다
 src/routeTree.gen.ts
+# 에이전트 작업 디렉터리
+.superpowers/
 ```
 
 `index.html`:
