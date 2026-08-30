@@ -1,5 +1,8 @@
-import type { User } from '@/entities/user/model/types';
+import type { User } from '../model/types';
 
+// shared/api 가 아니라 여기 두는 이유는 의존 방향이다.
+// 목 데이터는 User 타입을 알아야 하는데, shared 가 entities 를 import 하면
+// app → pages → features → entities → shared 방향이 뒤집힌다.
 const USERS: User[] = [
   { id: 'u-1', name: '김서연', email: 'seoyeon@example.com', department: '플랫폼', active: true },
   { id: 'u-2', name: '박도윤', email: 'doyun@example.com', department: '플랫폼', active: true },
