@@ -121,7 +121,7 @@ pnpm add react@18.3.1 react-dom@18.3.1 \
 pnpm add -D vite @vitejs/plugin-react-swc typescript \
   @tanstack/router-plugin @tanstack/virtual-file-routes \
   tailwindcss @tailwindcss/vite \
-  vitest jsdom @testing-library/react @testing-library/dom \
+  vitest jsdom@^25.0.1 @testing-library/react @testing-library/dom \
   @testing-library/jest-dom @testing-library/user-event \
   @types/react@^18.3.11 @types/react-dom@^18.3.1 @types/node
 ```
@@ -183,8 +183,7 @@ src/routeTree.gen.ts
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
-    "baseUrl": ".",
+    "types": ["node", "vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src", "vite.config.ts"]
