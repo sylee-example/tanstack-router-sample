@@ -1811,9 +1811,9 @@ pnpm build && pnpm verify:chunks
 
 라우터를 쓰기 위해 알아야 할 전부다.
 
-### 1. 라우트 추가 = 두 곳
+### 1. 라우트 추가 = 한 줄 + 빈 파일
 
-`src/app/routes.ts` 에 한 줄, `src/pages/<slice>/route.tsx` 에 한 파일.
+`src/app/routes.ts` 에 한 줄 추가하고, 가리킨 자리에 **빈 파일**을 만든다.
 
 ```ts
 // src/app/routes.ts
@@ -1823,7 +1823,32 @@ layout('layouts/authed.tsx', [
 ]);
 ```
 
-경로는 `vite.config.ts` 의 `routesDirectory`(= `src/app`) 기준이다.
+```bash
+mkdir -p src/pages/orders && touch src/pages/orders/route.tsx
+```
+
+`pnpm dev` 가 돌면 생성기가 빈 파일에 보일러플레이트를 써넣는다.
+
+```tsx
+import { createFileRoute } from '@tanstack/react-router';
+
+export const Route = createFileRoute('/_authed/orders')({
+  component: RouteComponent
+})
+
+function RouteComponent() { return <div>Hello "/_authed/orders"!</div> };
+```
+
+컴포넌트 본문만 채우면 된다.
+
+두 가지를 외우지 않아도 된다.
+
+- **경로 문자열**: `createFileRoute('/아무거나')` 로 써도 생성기가 트리 기준 정확한 값으로 파일을 고쳐 쓴다. 레이아웃 접두사(`/_authed`)를 손으로 맞출 일이 없다.
+- **파일 위치**: `routes.ts` 의 경로는 `vite.config.ts` 의 `routesDirectory`(= `src/app`) 기준이다. `routes.ts` 자기 위치 기준이 아니다.
+
+빈 파일조차 없으면 생성기가 만들어주지 않고 `⚠️ File ... does not exist` 로 멈춘다. `touch` 는 필요하다.
+
+보일러플레이트 모양이 마음에 안 들면 `vite.config.ts` 의 `tanstackRouter({ customScaffolding: { routeTemplate } })` 로 바꾼다.
 
 ### 2. route.tsx 는 항상 같은 모양
 

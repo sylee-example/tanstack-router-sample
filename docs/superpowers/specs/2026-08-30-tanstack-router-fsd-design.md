@@ -153,7 +153,7 @@ tanstackRouter({
 
 이 프로젝트에서 라우터를 쓰기 위해 알아야 할 전부다.
 
-1. **라우트 추가** = `app/routes.ts`에 한 줄 + `pages/<name>/route.tsx` 한 파일.
+1. **라우트 추가** = `app/routes.ts`에 한 줄 + 빈 `pages/<name>/route.tsx` 를 touch. 생성기가 빈 파일에 `createFileRoute` 보일러플레이트를 채우고(`generator.js:471`), 경로 문자열이 틀려도 트리 기준으로 고쳐 쓴다(`transform/transform.js:40-51`).
 2. **`route.tsx`는 항상 같은 모양**이다.
    ```tsx
    export const Route = createFileRoute('<path>')({ loader?, component });
